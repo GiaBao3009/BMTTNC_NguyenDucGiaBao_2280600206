@@ -1,5 +1,9 @@
 from flask import Flask, request, jsonify
 from cipher.caesar import CaesarCipher
+from cipher.vigenere import VigenereCipher
+from cipher.railfence import RailFenceCipher
+from cipher.playfair import PlayFairCipher
+from cipher.transposition import TranspositionCipher 
 
 app = Flask(__name__)
 
@@ -24,9 +28,6 @@ def caesar_decrypt():
     return jsonify({'deccrypted_message': deccrypted_text})
 
 # VIGENERE CIPHER
-from cipher.vigenere import VigenereCipher # Thêm vào phần đầu của
-# file api.py
-
 #VIGENERE CIPHER ALGORITHM
 vigenere_cipher = VigenereCipher()
 
@@ -47,9 +48,6 @@ def vigenere_decrypt():
     return jsonify({'decrypted_text': decrypted_text})
 
 #RAIFENCE CIPHER
-from cipher.railfence import RailFenceCipher # Thêm vào phần đầu của
-# file api.py
-
 # Thêm đoạn sau vào trước hàm main
 #RAILFENCE CIPHER ALGORITHM
 railfence_cipher = RailFenceCipher()
@@ -71,8 +69,6 @@ def decrypt():
     return jsonify({'decrypted_text': decrypted_text})
 
 # PLAY FAIR
-from cipher.playfair import PlayFairCipher # Thêm vào phần đầu củafile api.py
-
  # Thêm đoạn sau vào trước hàm main
  #PLAYFAIR CIPHER ALGORITHM
 playfair_cipher = PlayFairCipher()
@@ -104,8 +100,7 @@ def playfair_decrypt():
     return jsonify({'decrypted_text': decrypted_text})
 
 # TRANSPOSITION
-from cipher.transposition import TranspositionCipher # Thêm vào phần đầu của file api.py
-
+from cipher.transposition import TranspositionCipher 
 # Thêm đoạn sau vào trước hàm main
 #TRANSPOSITION CIPHER ALGORITHM
 transposition_cipher = TranspositionCipher()
