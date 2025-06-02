@@ -1,103 +1,131 @@
 from flask import Flask, request, jsonify
 from cipher.caesar import CaesarCipher
-from cipher.Vigenere import VigenereCipher
 
 app = Flask(__name__)
 
+
+# CAESAR CIPHER ALGORITHM
+caesar_cipher = CaesarCipher()
+
 @app.route("/api/caesar/encrypt", methods=["POST"])
 def caesar_encrypt():
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'No data provided'}), 400
-
-        plain_text = data.get('plain_text')
-        key = data.get('key')
-
-        if plain_text is None or key is None:
-            return jsonify({'error': 'Missing plain_text or key'}), 400
-
-        try:
-            key = int(key)
-        except ValueError:
-            return jsonify({'error': 'Key must be an integer'}), 400
-
-        cipher = CaesarCipher()  # Instantiate CaesarCipher without key here
-        encrypted_text = cipher.encrypt_text(plain_text, key) # Use encrypt_text method
-        return jsonify({'encrypted_message': encrypted_text})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    data = request.json
+    plain_text = data['plain_text']
+    key = int(data['key'])
+    encrypted_text = caesar_cipher.encrypt_text(plain_text, key)
+    return jsonify({'encrypted_message': encrypted_text})
 
 @app.route("/api/caesar/decrypt", methods=["POST"])
 def caesar_decrypt():
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'No data provided'}), 400
+    data = request.json
+    cipher_text = data['cipher_text']
+    key = int(data['key'])
+    deccrypted_text = caesar_cipher.decrypt_text(cipher_text, key)
+    return jsonify({'deccrypted_message': deccrypted_text})
 
-        cipher_text = data.get('cipher_text')
-        key = data.get('key')
+# VIGENERE CIPHER
+from cipher.vigenere import VigenereCipher # Thêm vào phần đầu của
+# file api.py
 
-        if cipher_text is None or key is None:
-            return jsonify({'error': 'Missing cipher_text or key'}), 400
-
-        try:
-            key = int(key)
-        except ValueError:
-            return jsonify({'error': 'Key must be an integer'}), 400
-
-        cipher = CaesarCipher() # Instantiate CaesarCipher without key here
-        decrypted_text = cipher.decrypt_text(cipher_text, key) # Use decrypt_text method
-        return jsonify({'decrypted_message': decrypted_text})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# VIGENERE CIPHER ALGORITHM
+#VIGENERE CIPHER ALGORITHM
 vigenere_cipher = VigenereCipher()
 
 @app.route('/api/vigenere/encrypt', methods=['POST'])
 def vigenere_encrypt():
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'No data provided'}), 400
-
-        plain_text = data.get('plain_text')
-        key = data.get('key')
-
-        if plain_text is None or key is None:
-            return jsonify({'error': 'Missing plain_text or key'}), 400
-
-        if not isinstance(key, str):
-            return jsonify({'error': 'Key must be a string'}), 400
-
-        cipher = VigenereCipher()
-        encrypted_text = cipher.vigenere_encrypt(plain_text, key)
-        return jsonify({'encrypted_text': encrypted_text})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    data = request.json
+    plain_text = data['plain_text']
+    key = data['key']
+    encrypted_text = vigenere_cipher.vigenere_encrypt(plain_text, key)
+    return jsonify({'encrypted_text': encrypted_text})
 
 @app.route('/api/vigenere/decrypt', methods=['POST'])
 def vigenere_decrypt():
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'No data provided'}), 400
+    data = request.json
+    cipher_text = data['cipher_text']
+    key = data['key']
+    decrypted_text = vigenere_cipher.vigenere_decrypt(cipher_text, key)
+    return jsonify({'decrypted_text': decrypted_text})
 
-        cipher_text = data.get('cipher_text')
-        key = data.get('key')
+#RAIFENCE CIPHER
+from cipher.railfence import RailFenceCipher # Thêm vào phần đầu của
+# file api.py
 
-        if cipher_text is None or key is None:
-            return jsonify({'error': 'Missing cipher_text or key'}), 400
+# Thêm đoạn sau vào trước hàm main
+#RAILFENCE CIPHER ALGORITHM
+railfence_cipher = RailFenceCipher()
 
-        if not isinstance(key, str):
-            return jsonify({'error': 'Key must be a string'}), 400
+@app.route('/api/railfence/encrypt', methods=['POST'])
+def encrypt():
+    data = request.json
+    plain_text = data['plain_text']
+    key = int(data['key'])
+    encrypted_text = railfence_cipher.rail_fence_encrypt(plain_text, key)
+    return jsonify({'encrypted_text': encrypted_text})
 
-        cipher = VigenereCipher()
-        decrypted_text = cipher.vigenere_decrypt(cipher_text, key)
-        return jsonify({'decrypted_text': decrypted_text})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+@app.route('/api/railfence/decrypt', methods=['POST'])
+def decrypt():
+    data = request.json
+    cipher_text = data['cipher_text']
+    key = int(data['key'])
+    decrypted_text = railfence_cipher.rail_fence_decrypt(cipher_text, key)
+    return jsonify({'decrypted_text': decrypted_text})
+
+# PLAY FAIR
+from cipher.playfair import PlayFairCipher # Thêm vào phần đầu củafile api.py
+
+ # Thêm đoạn sau vào trước hàm main
+ #PLAYFAIR CIPHER ALGORITHM
+playfair_cipher = PlayFairCipher()
+
+@app.route('/api/playfair/creatematrix', methods=['POST'])
+def playfair_creatematrix():
+    data = request.json
+    key = data['key']
+    playfair_matrix = playfair_cipher.create_playfair_matrix(key)
+    return jsonify({"playfair_matrix": playfair_matrix})
+@app.route('/api/playfair/encrypt', methods=['POST'])
+def playfair_encrypt():
+    data = request.json
+    plain_text = data['plain_text']
+    key = data['key']
+    playfair_matrix = playfair_cipher.create_playfair_matrix(key)
+    encrypted_text = playfair_cipher.playfair_encrypt(plain_text,
+                                                      playfair_matrix)
+    return jsonify({'encrypted_text': encrypted_text})
+
+@app.route('/api/playfair/decrypt', methods=['POST'])
+def playfair_decrypt():
+    data = request.json
+    cipher_text = data['cipher_text']
+    key = data['key']
+    playfair_matrix = playfair_cipher.create_playfair_matrix(key)
+    decrypted_text = playfair_cipher.playfair_decrypt(cipher_text,
+                                                       playfair_matrix)
+    return jsonify({'decrypted_text': decrypted_text})
+
+# TRANSPOSITION
+from cipher.transposition import TranspositionCipher # Thêm vào phần đầu của file api.py
+
+# Thêm đoạn sau vào trước hàm main
+#TRANSPOSITION CIPHER ALGORITHM
+transposition_cipher = TranspositionCipher()
+
+@app.route('/api/transposition/encrypt', methods=['POST'])
+def transposition_encrypt():
+    data = request.get_json()
+    plain_text = data.get('plain_text')
+    key = int(data.get('key'))
+    encrypted_text = transposition_cipher.encrypt(plain_text, key)
+    return jsonify({'encrypted_text': encrypted_text})
+
+@app.route('/api/transposition/decrypt', methods=['POST'])
+def transposition_decrypt():
+    data = request.get_json()
+    cipher_text = data.get('cipher_text')
+    key = int(data.get('key'))
+    decrypted_text = transposition_cipher.decrypt(cipher_text, key)
+    return jsonify({'decrypted_text': decrypted_text})
+
 
 # main function
 if __name__ == "__main__":
