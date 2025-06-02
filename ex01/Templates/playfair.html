@@ -1,14 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Vigenere Cipher</title>
+    <title>Playfair Cipher</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        table.matrix-table {
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        table.matrix-table td {
+            border: 1px solid black;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <table class="table">
             <tr>
-                <td style="text-align: center; font-weight: bold; font-size: 25px;">VIGENERE CIPHER</td>
+                <td style="text-align: center; font-weight: bold; font-size: 25px;">PLAYFAIR CIPHER</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; color: blue">CREATE MATRIX</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="mb-3">
+                        <label class="form-label">Key for Matrix:</label>
+                        <input type="text" class="form-control" id="matrixKey" placeholder="Input Key" required>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="createMatrix()">Create Matrix</button>
+                    <div id="matrixDisplay" class="mt-3"></div>
+                </td>
             </tr>
             <tr>
                 <td style="font-weight: bold; color: blue">ENCRYPTION</td>
@@ -60,7 +87,7 @@
             });
 
             try {
-                const response = await fetch(`http://localhost:5050/api/vigenere/${type}`, {
+                const response = await fetch(`http://localhost:5050/api/playfair/${type}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -78,6 +105,49 @@
                 alert('Error: ' + error.message);
             }
         }
+
+        async function createMatrix() {
+            const keyInput = document.getElementById('matrixKey');
+            const key = keyInput.value;
+            const matrixDisplay = document.getElementById('matrixDisplay');
+
+            if (!key) {
+                alert('Please enter a key to create the matrix.');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5050/api/playfair/create_matrix', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ key: key })
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    matrixDisplay.innerHTML = `<p style="color: red;">${result.error}</p>`;
+                } else if (result.matrix) {
+                    let matrixHTML = '<table class="matrix-table"><tbody>';
+                    result.matrix.forEach(row => {
+                        matrixHTML += '<tr>';
+                        row.forEach(cell => {
+                            matrixHTML += `<td>${cell}</td>`;
+                        });
+                        matrixHTML += '</tr>';
+                    });
+                    matrixHTML += '</tbody></table>';
+                    matrixDisplay.innerHTML = matrixHTML;
+                } else {
+                    matrixDisplay.innerHTML = '<p>Unexpected response from server.</p>';
+                }
+
+            } catch (error) {
+                matrixDisplay.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
     </script>
 </body>
-</html>
+</html> 

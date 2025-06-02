@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Caesar Cipher</title>
+    <title>Rail Fence Cipher</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
     <div class="container">
         <table class="table">
             <tr>
-                <td style="text-align: center; font-weight: bold; font-size: 25px;">CAESAR CIPHER</td>
+                <td style="text-align: center; font-weight: bold; font-size: 25px;">RAIL FENCE CIPHER</td>
             </tr>
             <tr>
                 <td style="font-weight: bold; color: blue">ENCRYPTION</td>
@@ -21,8 +21,8 @@
                             <input type="text" class="form-control" name="plain_text" placeholder="Input Plain Text" required autofocus>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Key:</label>
-                            <input type="number" class="form-control" name="key" placeholder="Input Key" required>
+                            <label class="form-label">Key (Number of Rails):</label>
+                            <input type="number" class="form-control" name="key" placeholder="Input Number of Rails" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Encrypt</button>
                     </form>
@@ -39,8 +39,8 @@
                             <input type="text" class="form-control" name="cipher_text" placeholder="Input Cipher Text" required/>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Key:</label>
-                            <input type="number" class="form-control" name="key" placeholder="Input Key" required/>
+                            <label class="form-label">Key (Number of Rails):</label>
+                            <input type="number" class="form-control" name="key" placeholder="Input Number of Rails" required/>
                         </div>
                         <button type="submit" class="btn btn-success">Decrypt</button>
                     </form>
@@ -60,7 +60,7 @@
             });
 
             try {
-                const response = await fetch(`http://localhost:5050/api/caesar/${type}`, {
+                const response = await fetch(`http://localhost:5050/api/railfence/${type}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -80,4 +80,4 @@
         }
     </script>
 </body>
-</html>
+</html> 

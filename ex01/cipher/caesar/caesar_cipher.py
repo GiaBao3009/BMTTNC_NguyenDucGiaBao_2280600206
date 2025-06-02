@@ -45,3 +45,31 @@ class CaesarCipher:
         result = self.encrypt(text)
         self.shift = -self.shift  # Restore original shift
         return result
+
+def caesar_encrypt(text: str, shift: int) -> str:
+    """
+    Encrypt text using Caesar cipher.
+    
+    Args:
+        text (str): Text to encrypt
+        shift (int): Shift value
+        
+    Returns:
+        str: Encrypted text
+    """
+    cipher = CaesarCipher(shift)
+    return cipher.encrypt(text)
+
+def caesar_decrypt(text: str, shift: int) -> str:
+    """
+    Decrypt text using Caesar cipher.
+    
+    Args:
+        text (str): Text to decrypt
+        shift (int): Shift value
+        
+    Returns:
+        str: Decrypted text
+    """
+    cipher = CaesarCipher(shift)
+    return cipher.decrypt(text)

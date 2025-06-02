@@ -9,23 +9,28 @@ app = Flask(__name__)
 
 
 # CAESAR CIPHER ALGORITHM
-caesar_cipher = CaesarCipher()
+caesar_cipher = CaesarCipher(shift=3)  
 
 @app.route("/api/caesar/encrypt", methods=["POST"])
 def caesar_encrypt():
     data = request.json
     plain_text = data['plain_text']
-    key = int(data['key'])
-    encrypted_text = caesar_cipher.encrypt_text(plain_text, key)
+    key = int(str(data['key']))  # Convert to string first, then to int
+    caesar_cipher.shift = key
+    encrypted_text = caesar_cipher.encrypt(plain_text)
     return jsonify({'encrypted_message': encrypted_text})
 
 @app.route("/api/caesar/decrypt", methods=["POST"])
 def caesar_decrypt():
     data = request.json
-    cipher_text = data['cipher_text']
-    key = int(data['key'])
-    deccrypted_text = caesar_cipher.decrypt_text(cipher_text, key)
-    return jsonify({'deccrypted_message': deccrypted_text})
+    # Accept both cipher_text and plain_text
+    cipher_text = data.get('cipher_text') or data.get('plain_text')
+    if not cipher_text:
+        return jsonify({'error': 'Missing cipher_text or plain_text'}), 400
+    key = int(str(data['key']))
+    caesar_cipher.shift = key
+    decrypted_text = caesar_cipher.decrypt(cipher_text)
+    return jsonify({'decrypted_message': decrypted_text})
 
 # VIGENERE CIPHER
 #VIGENERE CIPHER ALGORITHM
